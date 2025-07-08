@@ -7,16 +7,16 @@ export PACKETSHARE_EMAIL="locpaypal@gmail.com"
 export PACKETSHARE_PASSWORD="Loc123456789"
 
 export TUN2SOCKS_CPU_LIMIT="0.05"  # 5% of a CPU core
-export TUN2SOCKS_RAM_LIMIT="128m"
-export TUN2SOCKS_RAM_RESERVE="64m"
+export TUN2SOCKS_RAM_LIMIT="64m"
+export TUN2SOCKS_RAM_RESERVE="32m"
 
-export TRAFFMONETIZER_CPU_LIMIT="0.05" # 3% of a CPU core
-export TRAFFMONETIZER_RAM_LIMIT="64m"
-export TRAFFMONETIZER_RAM_RESERVE="32m"
+export TRAFFMONETIZER_CPU_LIMIT="0.03" # 3% of a CPU core
+export TRAFFMONETIZER_RAM_LIMIT="32m"
+export TRAFFMONETIZER_RAM_RESERVE="16m"
 
-export repocket_CPU_LIMIT="0.05" # 3% of a CPU core
-export repocket_RAM_LIMIT="64m"
-export repocket_RAM_RESERVE="32m"
+export repocket_CPU_LIMIT="0.03" # 3% of a CPU core
+export repocket_RAM_LIMIT="32m"
+export repocket_RAM_RESERVE="16m"
 
 PROXY_FILE="proxies.txt"
 COMPOSE_FILE="docker-compose.yml"

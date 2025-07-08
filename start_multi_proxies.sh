@@ -6,11 +6,17 @@ export TRAFFMONETIZER_TOKEN="cCuCGOWZXNnk9dL5BR+cz1QHbjCdXJnFb8e3a9OAS2k="
 export PACKETSHARE_EMAIL="locpaypal@gmail.com"
 export PACKETSHARE_PASSWORD="Loc123456789"
 
-# Optional: Set resource limits if needed, otherwise defaults from docker-compose.yml will be used
-export ALT_MIN_CPU_LIMIT="0.5" # Example: 0.5 CPU core per instance
-export RAM_LIMIT="512m"       # Example: 512MB RAM limit per instance
-export RAM_RESERVE="256m"     # Example: 256MB RAM reservation per instance
-# --- End Global Configuration ---
+export TUN2SOCKS_CPU_LIMIT="0.05"  # 5% of a CPU core
+export TUN2SOCKS_RAM_LIMIT="128m"
+export TUN2SOCKS_RAM_RESERVE="64m"
+
+export TRAFFMONETIZER_CPU_LIMIT="0.06" # 3% of a CPU core
+export TRAFFMONETIZER_RAM_LIMIT="64m"
+export TRAFFMONETIZER_RAM_RESERVE="32m"
+
+export repocket_CPU_LIMIT="0.06" # 3% of a CPU core
+export repocket_RAM_LIMIT="64m"
+export repocket_RAM_RESERVE="32m"
 
 PROXY_FILE="proxies.txt"
 COMPOSE_FILE="docker-compose.yml"

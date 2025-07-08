@@ -36,7 +36,7 @@ services:
     environment:
       - TM_TOKEN=${TRAFFMONETIZER_TOKEN}
     command: start accept --token ${TRAFFMONETIZER_TOKEN}
-    cpus: ${TRAFFMONETIZER_CPU_LIMIT:-0.06} # NEW: Add CPU limit
+    cpus: ${TRAFFMONETIZER_CPU_LIMIT:-0.05} # NEW: Add CPU limit
     mem_limit: ${TRAFFMONETIZER_RAM_LIMIT:-64m} # NEW: Add RAM limit
     mem_reservation: ${TRAFFMONETIZER_RAM_RESERVE:-32m}
     logging:
@@ -52,7 +52,7 @@ services:
     environment:
         - RP_EMAIL=nguyentanloc180@gmail.com
         - RP_API_KEY=8873dd7c-f936-4deb-b128-c15dc54813da
-    cpus: ${repocket_CPU_LIMIT:-0.06} # NEW: Add CPU limit
+    cpus: ${repocket_CPU_LIMIT:-0.05} # NEW: Add CPU limit
     mem_limit: ${repocket_RAM_LIMIT:-64m} # NEW: Add RAM limit
     mem_reservation: ${repocket_RAM_RESERVE:-32m}
     logging:

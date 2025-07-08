@@ -10,11 +10,11 @@ export TUN2SOCKS_CPU_LIMIT="0.05"  # 5% of a CPU core
 export TUN2SOCKS_RAM_LIMIT="128m"
 export TUN2SOCKS_RAM_RESERVE="64m"
 
-export TRAFFMONETIZER_CPU_LIMIT="0.06" # 3% of a CPU core
+export TRAFFMONETIZER_CPU_LIMIT="0.05" # 3% of a CPU core
 export TRAFFMONETIZER_RAM_LIMIT="64m"
 export TRAFFMONETIZER_RAM_RESERVE="32m"
 
-export repocket_CPU_LIMIT="0.06" # 3% of a CPU core
+export repocket_CPU_LIMIT="0.05" # 3% of a CPU core
 export repocket_RAM_LIMIT="64m"
 export repocket_RAM_RESERVE="32m"
 
@@ -55,7 +55,7 @@ while IFS= read -r PROXY_URL; do
     echo "" # Add a newline for readability
 
     # Add a 2-second delay before starting the next instance
-    sleep 2
+    sleep 1
 
 done < "$PROXY_FILE"
 

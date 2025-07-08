@@ -21,8 +21,8 @@ services:
     devices:
       - /dev/net/tun:/dev/net/tun
     cpus: ${TUN2SOCKS_CPU_LIMIT:-0.05} # Updated to a much smaller value
-    mem_limit: ${TUN2SOCKS_RAM_LIMIT:-64m} # Updated
-    mem_reservation: ${TUN2SOCKS_RAM_RESERVE:-32m}
+    mem_limit: ${TUN2SOCKS_RAM_LIMIT:-128m} # Updated
+    mem_reservation: ${TUN2SOCKS_RAM_RESERVE:-64m}
     logging:
       driver: json-file
       options:

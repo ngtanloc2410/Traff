@@ -1,0 +1,59 @@
+# docker-compose.yml
+services:
+  tun2socks:
+    container_name: tun2socks-${INSTANCE_ID} # Unique container name
+    image: xjasonlyu/tun2socks
+    restart: always
+    hostname: tun2socks-host-${INSTANCE_ID} # Unique hostname
+    labels:
+      - project=proxy-${INSTANCE_ID}
+    environment:
+      - LOGLEVEL=info
+      - PROXY=${PROXY_URL} # This will be set per instance
+      - EXTRA_COMMANDS=ip rule add iif lo ipproto udp dport 53 lookup main;
+    cap_add:
+      - NET_ADMIN
+    networks:
+      - my_shared_proxy_network
+    dns:
+      - 1.1.1.1
+      - 8.8.8.8
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    cpus: ${ALT_MIN_CPU_LIMIT:-0.1}
+    mem_limit: ${RAM_LIMIT:-256m}
+    mem_reservation: ${RAM_RESERVE:-128m}
+    logging:
+      driver: json-file
+      options:
+        max-size: 10k
+        max-file: 1
+  traffmonetizer:
+    container_name: traffmonetizer-${INSTANCE_ID} # Unique container name
+    image: traffmonetizer/cli_v2:latest
+    restart: always
+    network_mode: service:tun2socks # Link to the specific tun2socks
+    environment:
+      - TM_TOKEN=${TRAFFMONETIZER_TOKEN}
+    command: start accept --token ${TRAFFMONETIZER_TOKEN}
+    logging:
+      driver: json-file
+      options:
+        max-size: 10k
+        max-file: 1
+  repocket:
+    container_name: repocket-${INSTANCE_ID} # Unique container name
+    image: repocket/repocket:latest
+    restart: always
+    network_mode: service:tun2socks # Link to the specific tun2socks
+    environment:
+        - RP_EMAIL=nguyentanloc180@gmail.com
+        - RP_API_KEY=8873dd7c-f936-4deb-b128-c15dc54813da
+    logging:
+      driver: json-file
+      options:
+        max-size: 10k
+        max-file: 1
+networks:
+  my_shared_proxy_network:
+    external: true

@@ -1,67 +1,56 @@
 #!/bin/bash
 
-# --- Global Configuration (apply to all instances) ---
-# IMPORTANT: Replace with your actual Traffmonetizer token and PacketShare credentials
-export TRAFFMONETIZER_TOKEN="cCuCGOWZXNnk9dL5BR+cz1QHbjCdXJnFb8e3a9OAS2k="
-export PACKETSHARE_EMAIL="locpaypal@gmail.com"
-export PACKETSHARE_PASSWORD="Loc123456789"
-
-export TUN2SOCKS_CPU_LIMIT="0.05"  # 5% of a CPU core
-export TUN2SOCKS_RAM_LIMIT="64m"
-export TUN2SOCKS_RAM_RESERVE="32m"
-
-export TRAFFMONETIZER_CPU_LIMIT="0.03" # 3% of a CPU core
-export TRAFFMONETIZER_RAM_LIMIT="32m"
-export TRAFFMONETIZER_RAM_RESERVE="16m"
-
-export repocket_CPU_LIMIT="0.03" # 3% of a CPU core
-export repocket_RAM_LIMIT="32m"
-export repocket_RAM_RESERVE="16m"
-
+# Configuration
 PROXY_FILE="proxies.txt"
 COMPOSE_FILE="docker-compose.yml"
+# Check if the external network exists; if not, create it
+if ! docker network inspect my_shared_proxy_network >/dev/null 2>&1; then
+    echo "Creating network 'my_shared_proxy_network'..."
+    docker network create my_shared_proxy_network
+fi
+ID_LOG="managed_instances.log"
+
+# Resources
+export TUN2SOCKS_CPU_LIMIT="0.05"
+export TUN2SOCKS_RAM_LIMIT="128m"
+
+export APP_CPU_LIMIT="0.03"
+export APP_RAM_LIMIT="32m"
+export APP_RAM_RESERVE="16m"
 
 if [ ! -f "$PROXY_FILE" ]; then
     echo "Error: Proxy file '$PROXY_FILE' not found."
     exit 1
 fi
 
-echo "Starting multiple proxy instances..."
+# Prepare the log file with a header
+echo "--- Instance Deployment Log: $(date) ---" >> "$ID_LOG"
+echo "Instance_ID | Proxy_URL | Earnapp_UUID | Proxyrack_UUID" >> "$ID_LOG"
 
-instance_counter=0 # Initialize counter
+instance_counter=0
 
-# Read proxies line by line
 while IFS= read -r PROXY_URL; do
-    # Skip empty lines or lines starting with #
     [[ -z "$PROXY_URL" || "$PROXY_URL" =~ ^# ]] && continue
 
-    # Increment the counter for the unique ID
     instance_counter=$((instance_counter + 1))
-    export INSTANCE_ID="${instance_counter}" # Set INSTANCE_ID to the current counter value
-
-    echo "--- Processing proxy: $PROXY_URL (Instance ID: ${INSTANCE_ID}) ---"
-
-    # Export PROXY_URL for this specific compose run
+    export INSTANCE_ID="${instance_counter}"
     export PROXY_URL
 
-    # Run docker compose for this instance with a unique project name
-    docker compose -f "$COMPOSE_FILE" --project-name "proxy-${INSTANCE_ID}" up -d
+    # Generate Unique IDs
+    export EARNAPP_UUID="sdk-node-$(head -c 16 /dev/urandom | xxd -p)"
+    export PROXYRACK_UUID=$(cat /dev/urandom | LC_ALL=C tr -dc 'A-F0-9' | dd bs=1 count=64 2>/dev/null)
 
-    if [ $? -ne 0 ]; then
-        echo "Error starting services for proxy: $PROXY_URL. Check logs for details."
-        # You might choose to exit here or continue to the next proxy
-        # exit 1
-    fi
-    echo "" # Add a newline for readability
+    # Create a local folder to store Earnapp data (Persistence)
+    mkdir -p "./data/earnapp/instance_${INSTANCE_ID}"
 
-    # Add a 2-second delay before starting the next instance
-    sleep 1
+    # Log the IDs to your file
+    echo "${INSTANCE_ID} | ${PROXY_URL} | ${EARNAPP_UUID} | ${PROXYRACK_UUID}" >> "$ID_LOG"
 
+    echo "Launching Instance ${INSTANCE_ID}..."
+    
+    docker compose -f "$COMPOSE_FILE" --project-name "proxy-stack-${INSTANCE_ID}" up -d
+
+    sleep 2 
 done < "$PROXY_FILE"
 
-echo "All proxy instances launched (or attempted). To manage them:"
-echo "List all running stacks: docker compose ls"
-echo "To stop a specific stack: docker compose -p proxy-<NUMBER> down"
-echo "To view logs for a specific stack (e.g., tun2socks): docker logs tun2socks-<NUMBER> -f"
-echo "Example: docker logs tun2socks-1 -f"
-echo "To stop ALL stacks started by this script: ./stop_all_proxies.sh"
+echo "Done! All IDs have been saved to: $ID_LOG"

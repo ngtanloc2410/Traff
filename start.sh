@@ -2,13 +2,13 @@
 
 # Configuration
 PROXY_FILE="proxies.txt"
-COMPOSE_FILE="docker-compose.yml"
+COMPOSE_FILE="compose.yml"
 # Check if the external network exists; if not, create it
 if ! docker network inspect my_shared_proxy_network >/dev/null 2>&1; then
     echo "Creating network 'my_shared_proxy_network'..."
     docker network create my_shared_proxy_network
 fi
-ID_LOG="managed_instances.log"
+ID_LOG="id.log"
 
 # Resources
 export TUN2SOCKS_CPU_LIMIT="0.05"

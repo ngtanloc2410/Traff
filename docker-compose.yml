@@ -33,13 +33,13 @@ services:
     mem_limit: ${APP_RAM_LIMIT:-32m}
     mem_reservation: ${APP_RAM_RESERVE:-16m}
 
-  #repocket:
-    #image: repocket/repocket
-    #restart: always
-    #network_mode: "service:tun2socks"
-    #environment:
-      #- RP_EMAIL=nguyentanloc180@gmail.com
-      #- RP_API_KEY=8873dd7c-f936-4deb-b128-c15dc54813da
+  repocket:
+    image: repocket/repocket
+    restart: always
+    network_mode: "service:tun2socks"
+    environment:
+      - RP_EMAIL=nguyentanloc180@gmail.com
+      - RP_API_KEY=8873dd7c-f936-4deb-b128-c15dc54813da
 
   packetstream:
     image: packetstream/psclient:latest
@@ -68,6 +68,16 @@ services:
     environment:
       - UUID=${PROXYRACK_UUID}
       - API_KEY=TSGIKZS3WX7IZCY0LKX0LHRQEQWUFLGSR5KSHU0J
+    cpus: ${APP_CPU_LIMIT:-0.03}
+    mem_limit: ${APP_RAM_LIMIT:-32m}
+    mem_reservation: ${APP_RAM_RESERVE:-16m}
+
+  honeygain:
+    image: honeygain/honeygain:latest
+    container_name: honeygain-${INSTANCE_ID}
+    restart: always
+    network_mode: "service:tun2socks"
+    command: -tou-accept -email "nguyentanloc180@gmail.com" -pass "Loc123456789" -device ${INSTANCE_ID}
     cpus: ${APP_CPU_LIMIT:-0.03}
     mem_limit: ${APP_RAM_LIMIT:-32m}
     mem_reservation: ${APP_RAM_RESERVE:-16m}

@@ -52,14 +52,15 @@ services:
     mem_reservation: ${APP_RAM_RESERVE:-16m}
 
   earnapp:
-    image: crocodileur/earnapp-optimized:latest
+    image: fazalfarhan01/earnapp:lite
     restart: always
     network_mode: "service:tun2socks"
     environment:
       - EARNAPP_UUID=${EARNAPP_UUID}
+      - EARNAPP_TERM=yes
     volumes:
       # This saves your Node ID in a local folder so you don't lose progress
-      - ./data/earnapp/instance_${INSTANCE_ID}:/etc/earnapp
+      - ./data/earnapp/${INSTANCE_ID}:/etc/earnapp
 
   proxyrack:
     image: proxyrack/pop:latest
@@ -72,15 +73,15 @@ services:
     mem_limit: ${APP_RAM_LIMIT:-32m}
     mem_reservation: ${APP_RAM_RESERVE:-16m}
 
-  honeygain:
-    image: honeygain/honeygain:latest
-    container_name: honeygain-${INSTANCE_ID}
-    restart: always
-    network_mode: "service:tun2socks"
-    command: -tou-accept -email "nguyentanloc180@gmail.com" -pass "Loc123456789" -device ${INSTANCE_ID}
-    cpus: ${APP_CPU_LIMIT:-0.03}
-    mem_limit: ${APP_RAM_LIMIT:-32m}
-    mem_reservation: ${APP_RAM_RESERVE:-16m}
+  #honeygain:
+    #image: honeygain/honeygain:latest
+    #container_name: honeygain-${INSTANCE_ID}
+    #restart: always
+    #network_mode: "service:tun2socks"
+    #command: -tou-accept -email "nguyentanloc180@gmail.com" -pass "Loc123456789" -device ${INSTANCE_ID}
+    #cpus: ${APP_CPU_LIMIT:-0.03}
+    #mem_limit: ${APP_RAM_LIMIT:-32m}
+    #mem_reservation: ${APP_RAM_RESERVE:-16m}
 
 networks:
   my_shared_proxy_network:

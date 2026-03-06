@@ -88,7 +88,7 @@ services:
     restart: always
     network_mode: "service:tun2socks"
     dns: 8.8.8.8
-    command: ["nguyentanloc180@gmail.com","-n", ";8.8.8.8"]
+    command: ["nguyentanloc180@gmail.com"]
     cpus: ${APP_CPU_LIMIT:-0.03}
     mem_limit: ${APP_RAM_LIMIT:-32m}
     mem_reservation: ${APP_RAM_RESERVE:-16m}

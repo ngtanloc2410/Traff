@@ -13,7 +13,19 @@ services:
       - my_shared_proxy_network
     dns:
       - 1.1.1.1
-    devices:
+      - 8.8.8.8
+      - 1.0.0.1
+      - 8.8.4.4
+    init: true                       # Ensures proper process management
+    privileged: false                # Try to keep this false if cap_add works
+    restart: always                  # Standard for networking services
+    stop_grace_period: 1m
+    sysctls:
+      - net.ipv4.ip_forward=1        # Allows the container to route traffic
+      - net.ipv6.conf.all.disable_ipv6=0
+    security_opt:
+      - no-new-privileges:true  
+    volumes:
       - /dev/net/tun:/dev/net/tun
     cpus: ${TUN2SOCKS_CPU_LIMIT}
     mem_limit: ${TUN2SOCKS_RAM_LIMIT}

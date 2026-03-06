@@ -52,15 +52,14 @@ services:
     mem_reservation: ${APP_RAM_RESERVE:-16m}
 
   earnapp:
-    image: fazalfarhan01/earnapp:lite
+    image: madereddy/earnapp
     restart: always
     network_mode: "service:tun2socks"
     environment:
       - EARNAPP_UUID=${EARNAPP_UUID}
-      - EARNAPP_TERM=yes
     volumes:
       # This saves your Node ID in a local folder so you don't lose progress
-      - ./data/earnapp/${INSTANCE_ID}:/etc/earnapp
+      - ./data/${EARNAPP_UUID}:/etc/earnapp
 
   proxyrack:
     image: proxyrack/pop:latest

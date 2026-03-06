@@ -37,7 +37,7 @@ while IFS= read -r PROXY_URL; do
     export PROXY_URL
 
     # Generate Unique IDs
-    export EARNAPP_UUID="sdk-node-$(head -c 16 /dev/urandom | xxd -p)"
+    export EARNAPP_UUID="sdk-node-$(head -c 16 /dev/urandom | od -An -tx1 | tr -d ' \n')"
     export PROXYRACK_UUID=$(cat /dev/urandom | LC_ALL=C tr -dc 'A-F0-9' | dd bs=1 count=64 2>/dev/null)
 
     # Create a local folder to store Earnapp data (Persistence)

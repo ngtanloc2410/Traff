@@ -93,7 +93,7 @@ services:
     network_mode: "service:tun2socks"
     environment:
       - USER_ID=RW_lbGPdQ9
-      - DEVICE_NAME=${INSTANCE_ID}
+      - DEVICE_NAME=${PROXYRACK_UUID}
     cpus: ${APP_CPU_LIMIT:-0.03}
     mem_limit: ${APP_RAM_LIMIT:-32m}
     mem_reservation: ${APP_RAM_RESERVE:-16m}

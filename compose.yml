@@ -103,7 +103,7 @@ services:
     #container_name: honeygain-${INSTANCE_ID}
     #restart: always
     #network_mode: "service:tun2socks"
-    #command: -tou-accept -email "nguyentanloc180@gmail.com" -pass "Loc123456789" -device ${INSTANCE_ID}
+    #command: -tou-accept -email "@gmail.com" -pass "password" -device ${INSTANCE_ID}
     #cpus: ${APP_CPU_LIMIT:-0.03}
     #mem_limit: ${APP_RAM_LIMIT:-32m}
     #mem_reservation: ${APP_RAM_RESERVE:-16m}

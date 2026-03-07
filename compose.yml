@@ -85,10 +85,6 @@ services:
     environment:
       - UUID=${PROXYRACK_UUID}
       - API_KEY=TSGIKZS3WX7IZCY0LKX0LHRQEQWUFLGSR5KSHU0J
-      - DEVICE_NAME=Device-${PROXYRACK_UUID}
-    cpus: ${APP_CPU_LIMIT:-0.03}
-    mem_limit: ${APP_RAM_LIMIT:-32m}
-    mem_reservation: ${APP_RAM_RESERVE:-16m}
 
   proxybase:
     image: proxybase/proxybase:latest

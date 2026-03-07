@@ -18,7 +18,6 @@ services:
       - 8.8.4.4
     init: true                       # Ensures proper process management
     privileged: false                # Try to keep this false if cap_add works
-    restart: always                  # Standard for networking services
     stop_grace_period: 1m
     sysctls:
       - net.ipv4.ip_forward=1        # Allows the container to route traffic
@@ -35,6 +34,9 @@ services:
     restart: always
     network_mode: "service:tun2socks"
     command: start accept --token "tbOBkhRHWXCl8NHzr+/GF5qHDrWRo43PFU1XzPe+GGM="
+    cpus: ${APP_CPU_LIMIT:-0.03}
+    mem_limit: ${APP_RAM_LIMIT:-32m}
+    mem_reservation: ${APP_RAM_RESERVE:-16m}
 
   pawns:
     image: iproyal/pawns-cli:latest
@@ -52,6 +54,9 @@ services:
     environment:
       - RP_EMAIL=nguyentanloc180@gmail.com
       - RP_API_KEY=8873dd7c-f936-4deb-b128-c15dc54813da
+    cpus: ${APP_CPU_LIMIT:-0.03}
+    mem_limit: ${APP_RAM_LIMIT:-32m}
+    mem_reservation: ${APP_RAM_RESERVE:-16m}
 
   packetstream:
     image: packetstream/psclient:latest
@@ -80,16 +85,18 @@ services:
     environment:
       - UUID=${PROXYRACK_UUID}
       - API_KEY=TSGIKZS3WX7IZCY0LKX0LHRQEQWUFLGSR5KSHU0J
+      - DEVICE_NAME=Device-${PROXYRACK_UUID}
     cpus: ${APP_CPU_LIMIT:-0.03}
     mem_limit: ${APP_RAM_LIMIT:-32m}
     mem_reservation: ${APP_RAM_RESERVE:-16m}
 
   proxybase:
     image: proxybase/proxybase:latest
+    container_name: proxybase-${INSTANCE_ID}
     restart: always
     network_mode: "service:tun2socks"
     environment:
-      - USER_ID="RW_lbGPdQ9"
+      - USER_ID=RW_lbGPdQ9
       - DEVICE_NAME=${INSTANCE_ID}
     cpus: ${APP_CPU_LIMIT:-0.03}
     mem_limit: ${APP_RAM_LIMIT:-32m}

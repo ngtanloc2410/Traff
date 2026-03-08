@@ -31,6 +31,7 @@ services:
 
   traffmonetizer:
     image: traffmonetizer/cli_v2
+    container_name: traffmonetizer-${INSTANCE_ID}
     restart: always
     network_mode: "service:tun2socks"
     command: start accept --token "tbOBkhRHWXCl8NHzr+/GF5qHDrWRo43PFU1XzPe+GGM="
@@ -45,6 +46,7 @@ services:
         
   pawns:
     image: iproyal/pawns-cli:latest
+    container_name: pawns-${INSTANCE_ID}
     restart: always
     network_mode: "service:tun2socks"
     command: -email="nguyentanloc180@gmail.com" -password="Loc123456789" -accept-tos
@@ -59,6 +61,7 @@ services:
         
   repocket:
     image: repocket/repocket
+    container_name: repocket-${INSTANCE_ID}
     restart: always
     network_mode: "service:tun2socks"
     environment:
@@ -75,6 +78,7 @@ services:
         
   packetstream:
     image: packetstream/psclient:latest
+    container_name: packetstream-${INSTANCE_ID}
     restart: always
     network_mode: "service:tun2socks"
     environment:
@@ -90,6 +94,7 @@ services:
         
   earnapp:
     image: madereddy/earnapp
+    container_name: earnapp-${INSTANCE_ID}
     restart: always
     network_mode: "service:tun2socks"
     environment:
@@ -105,6 +110,7 @@ services:
         
   proxyrack:
     image: proxyrack/pop:latest
+    container_name: proxyrack-${INSTANCE_ID}
     restart: always
     network_mode: "service:tun2socks"
     environment:

@@ -37,7 +37,12 @@ services:
     cpus: ${APP_CPU_LIMIT:-0.03}
     mem_limit: ${APP_RAM_LIMIT:-32m}
     mem_reservation: ${APP_RAM_RESERVE:-16m}
-
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+        
   pawns:
     image: iproyal/pawns-cli:latest
     restart: always
@@ -46,7 +51,12 @@ services:
     cpus: ${APP_CPU_LIMIT:-0.03}
     mem_limit: ${APP_RAM_LIMIT:-32m}
     mem_reservation: ${APP_RAM_RESERVE:-16m}
-
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+        
   repocket:
     image: repocket/repocket
     restart: always
@@ -57,7 +67,12 @@ services:
     cpus: ${APP_CPU_LIMIT:-0.03}
     mem_limit: ${APP_RAM_LIMIT:-32m}
     mem_reservation: ${APP_RAM_RESERVE:-16m}
-
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+        
   packetstream:
     image: packetstream/psclient:latest
     restart: always
@@ -67,7 +82,12 @@ services:
     cpus: ${APP_CPU_LIMIT:-0.03}
     mem_limit: ${APP_RAM_LIMIT:-32m}
     mem_reservation: ${APP_RAM_RESERVE:-16m}
-
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+        
   earnapp:
     image: madereddy/earnapp
     restart: always
@@ -77,7 +97,12 @@ services:
     volumes:
       # This saves your Node ID in a local folder so you don't lose progress
       - ./data/${EARNAPP_UUID}:/etc/earnapp
-
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+        
   proxyrack:
     image: proxyrack/pop:latest
     restart: always
@@ -85,6 +110,11 @@ services:
     environment:
       - UUID=${PROXYRACK_UUID}
       - API_KEY=TSGIKZS3WX7IZCY0LKX0LHRQEQWUFLGSR5KSHU0J
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   proxybase:
     image: proxybase/proxybase:latest
@@ -97,6 +127,11 @@ services:
     cpus: ${APP_CPU_LIMIT:-0.03}
     mem_limit: ${APP_RAM_LIMIT:-32m}
     mem_reservation: ${APP_RAM_RESERVE:-16m}
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
   
   #honeygain:
     #image: honeygain/honeygain:latest

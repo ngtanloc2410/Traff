@@ -49,11 +49,17 @@ for (( i=1; i<=$IP_COUNT; i++ )); do
         --sysctl net.ipv6.conf.default.disable_ipv6=1 \
         --sysctl net.ipv6.conf.all.disable_ipv6=1 \
         --sysctl net.ipv6.conf.lo.disable_ipv6=1 \
+        --log-driver json-file \
+        --log-opt max-size=10m \
+        --log-opt max-file=3 \
+        --health-cmd="ping -c 1 www.ifconfig.me || exit 1" \
+        --health-interval=30s \
+        --health-timeout=10s \
+        --health-retries=3 \
         -v pia:/pia \
         -e LOC="$REGION" \
         -e USER="p3526321" \
         -e PASS="Loc123456789" \
-        -e VPNDNS="8.8.8.8,8.8.4.4" \
         thrnz/docker-wireguard-pia
 
     # 4. Check for a Unique IP
@@ -126,8 +132,8 @@ for (( i=1; i<=$IP_COUNT; i++ )); do
         --log-driver json-file \
         --log-opt max-size=10m \
         --log-opt max-file=3 \
-        traffmonetizer/cli_v2:arm64v8 \
-        start accept --token "tbOBkhRHWXCl8NHzr+/GF5qHDrWRo43PFU1XzPe+GGM=" --device-name "$CURRENT_IP"
+        traffmonetizer/cli_v2 \
+        start accept --token "tbOBkhRHWXCl8NHzr+/GF5qHDrWRo43PFU1XzPe+GGM=" --device-name "a$CURRENT_IP"
 
     # 6. Write to the management file
     TIMESTAMP=$(date "+%Y-%m-%d %H:%M:%S")

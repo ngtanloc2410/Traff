@@ -6,7 +6,7 @@
 REGION=$1
 JSON_FILE="pialist.json"
 MANAGEMENT_FILE="managed_ips.txt"
-MAX_ATTEMPTS=15 
+MAX_ATTEMPTS=20
 
 # 1. Validate Input
 if [ -z "$REGION" ]; then
@@ -53,13 +53,13 @@ for (( i=1; i<=$IP_COUNT; i++ )); do
         --log-opt max-size=10m \
         --log-opt max-file=3 \
         --health-cmd="ping -c 1 www.ifconfig.me || exit 1" \
-        --health-interval=30s \
-        --health-timeout=10s \
+        --health-interval=90s \
+        --health-timeout=20s \
         --health-retries=3 \
         -v pia:/pia \
         -e LOC="$REGION" \
         -e USER="p3526321" \
-        -e PASS="Loc123456789" \
+        -e PASS="" \
         thrnz/docker-wireguard-pia
 
     # 4. Check for a Unique IP

@@ -51,8 +51,8 @@ for (( i=1; i<=$IP_COUNT; i++ )); do
         --sysctl net.ipv6.conf.lo.disable_ipv6=1 \
         -v pia:/pia \
         -e LOC="$REGION" \
-        -e USER="p6750469" \
-        -e PASS="YeeV2qLNtV" \
+        -e USER="p3526321" \
+        -e PASS="Loc123456789" \
         -e VPNDNS="8.8.8.8,8.8.4.4" \
         thrnz/docker-wireguard-pia
 
@@ -126,7 +126,7 @@ for (( i=1; i<=$IP_COUNT; i++ )); do
         --log-driver json-file \
         --log-opt max-size=10m \
         --log-opt max-file=3 \
-        traffmonetizer/cli_v2 \
+        traffmonetizer/cli_v2:arm64v8 \
         start accept --token "tbOBkhRHWXCl8NHzr+/GF5qHDrWRo43PFU1XzPe+GGM=" --device-name "$CURRENT_IP"
 
     # 6. Write to the management file

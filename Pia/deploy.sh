@@ -6,7 +6,7 @@
 REGION=$1
 JSON_FILE="pialist.json"
 MANAGEMENT_FILE="managed_ips.txt"
-MAX_ATTEMPTS=10 
+MAX_ATTEMPTS=15 
 
 # 1. Validate Input
 if [ -z "$REGION" ]; then
@@ -78,8 +78,8 @@ for (( i=1; i<=$IP_COUNT; i++ )); do
             exit 1
         fi
 
-        echo "Attempt $ATTEMPT/$MAX_ATTEMPTS: Waiting for connection (10s)..."
-        sleep 10
+        echo "Attempt $ATTEMPT/$MAX_ATTEMPTS: Waiting for connection (6s)..."
+        sleep 6
         
         CURRENT_IP=$(docker exec "$VPN_NAME" curl -s https://ifconfig.me)
         

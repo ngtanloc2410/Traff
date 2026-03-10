@@ -22,4 +22,4 @@ Tạo file proxies.txt . Dán proxy vào với dịnh dạng của tun2sock. R�
 # Dừng chay toàn bộ ( Kể cả không phải docker liên quan tới traff ) : 
 ``` sudo docker stop $(sudo docker ps -a -q) &&  sudo docker rm $(sudo docker ps -a -q) ```
 # Cài docker check health tự động restart :
-## docker run -d --name autoheal --restart=always --env AUTOHEAL_CONTAINER_LABEL=all -v /var/run/docker.sock:/var/run/docker.sock  willfarrell/autoheal ##
+`` docker run -d --name autoheal --restart=always --env AUTOHEAL_CONTAINER_LABEL=all -v /var/run/docker.sock:/var/run/docker.sock  willfarrell/autoheal ``

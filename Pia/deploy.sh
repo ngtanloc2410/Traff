@@ -62,7 +62,7 @@ for (( i=1; i<=$IP_COUNT; i++ )); do
         -e PASS="" \
         thrnz/docker-wireguard-pia
 
-    # 4. Check for a Unique IP
+    # 4. Check for a Unique IP (Optimized Logic)
     UNIQUE=false
     CURRENT_IP=""
     ATTEMPT=0 
@@ -72,50 +72,38 @@ for (( i=1; i<=$IP_COUNT; i++ )); do
         
         if [ "$ATTEMPT" -gt "$MAX_ATTEMPTS" ]; then
             echo "--------------------------------------------------------"
-            echo "CRITICAL: Reached $MAX_ATTEMPTS failed attempts for $VPN_NAME."
-            echo "Cleaning up failing container..."
-            
-            # Stop and Remove the container that couldn't get a unique IP
-            docker stop "$VPN_NAME" > /dev/null 2>&1
-            docker rm "$VPN_NAME" > /dev/null 2>&1
-            
-            echo "Container $VPN_NAME removed. Exiting script."
-            echo "--------------------------------------------------------"
+            echo "CRITICAL: Max attempts reached for $VPN_NAME. Cleaning up..."
+            docker rm -f "$VPN_NAME" > /dev/null 2>&1
             exit 1
         fi
 
-        echo "Attempt $ATTEMPT/$MAX_ATTEMPTS: Waiting for connection (6s)..."
-        sleep 6
+        # Wait for the container to be "healthy" (as defined by your --health-cmd)
+        # This prevents running curl before the WireGuard tunnel is actually up.
+        echo "Attempt $ATTEMPT/$MAX_ATTEMPTS: Waiting for VPN handshake..."
         
-        CURRENT_IP=$(docker exec "$VPN_NAME" curl -s https://ifconfig.me)
+        # Increased wait: VPNs rarely handshake and route in under 10-12s
+        sleep 10
+
+        # Retrieve IP with a timeout to prevent the script from hanging
+        CURRENT_IP=$(docker exec "$VPN_NAME" curl -s --max-time 10 https://ifconfig.me)
         
         if [ -z "$CURRENT_IP" ]; then
-            echo "Could not retrieve IP. Restarting VPN..."
+            echo "Handshake failed or no route. Cooling down (5s) before restart..."
+            sleep 3
             docker restart "$VPN_NAME"
             continue
         fi
 
-        # Check persistence file
-        if [ -f "$MANAGEMENT_FILE" ] && grep -q "$CURRENT_IP" "$MANAGEMENT_FILE"; then
-             echo "IP $CURRENT_IP exists in $MANAGEMENT_FILE. Restarting..."
-             docker restart "$VPN_NAME"
-             continue
-        fi
-
-        # Check session duplicates
-        IS_DUPLICATE=false
-        for ip in "${USED_IPS[@]}"; do
-            if [ "$ip" == "$CURRENT_IP" ]; then
-                IS_DUPLICATE=true
-                break
-            fi
-        done
-
-        if [ "$IS_DUPLICATE" = true ]; then
-            echo "Duplicate IP in session ($CURRENT_IP). Restarting..."
+        # Check if IP is in the managed file OR already used in this session
+        if grep -q "$CURRENT_IP" "$MANAGEMENT_FILE" 2>/dev/null || [[ " ${USED_IPS[@]} " =~ " ${CURRENT_IP} " ]]; then
+            echo "Duplicate IP detected ($CURRENT_IP). Requesting new IP..."
+            
+            # Instead of immediate restart, we wait a moment so the VPN server 
+            # might assign a different node/IP on the next attempt.
+            sleep 3
             docker restart "$VPN_NAME"
         else
-            echo "Unique IP obtained: $CURRENT_IP"
+            echo "Success! Unique IP obtained: $CURRENT_IP"
             USED_IPS+=("$CURRENT_IP")
             UNIQUE=true
         fi

@@ -22,3 +22,5 @@ Tạo file proxies.txt . Dán proxy vào với dịnh dạng của tun2sock. R�
 `` docker run -d --name autoheal --restart=always --env AUTOHEAL_CONTAINER_LABEL=all -v /var/run/docker.sock:/var/run/docker.sock  willfarrell/autoheal ``
 # Tính số docker đang chạy theo tên có chứa :
 ``` docker ps -a --filter "name=spain" -q | wc -l ```
+# Tăng limit linux để chạy được nhiều process ( nhiều container ) :
+``` sudo sysctl -w fs.inotify.max_user_watches=4194304 && sudo sysctl -w fs.inotify.max_user_instances=8192 && sudo sysctl -w fs.inotify.max_queued_events=65536 && sysctl fs.inotify ```

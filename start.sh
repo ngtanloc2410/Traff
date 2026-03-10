@@ -6,7 +6,7 @@ COMPOSE_FILE="compose.yml"
 # Check if the external network exists; if not, create it
 if ! docker network inspect my_shared_proxy_network >/dev/null 2>&1; then
     echo "Creating network 'my_shared_proxy_network'..."
-    docker network create my_shared_proxy_network
+    docker network create --subnet=172.20.0.0/16 my_shared_proxy_network
 fi
 ID_LOG="id.log"
 

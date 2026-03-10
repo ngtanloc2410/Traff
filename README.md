@@ -24,6 +24,7 @@ Tạo file proxies.txt . Dán proxy vào với dịnh dạng của tun2sock. R�
 ``` docker ps -a --filter "name=spain" -q | wc -l ```
 # Tăng limit linux để chạy được nhiều process ( nhiều container ) :
 ``` sudo sysctl -w fs.inotify.max_user_watches=4194304 && sudo sysctl -w fs.inotify.max_user_instances=8192 && sudo sysctl -w fs.inotify.max_queued_events=65536 && sysctl fs.inotify ```
+``` sudo sysctl -w net.ipv4.neigh.default.gc_thresh1=1024 && sudo sysctl -w net.ipv4.neigh.default.gc_thresh2=4096 && sudo sysctl -w net.ipv4.neigh.default.gc_thresh3=8192 ```
 # Chạy full region US :
 ``` ./deploy.sh us_idaho-pf; ./deploy.sh us_kansas-pf; ./deploy.sh us_minnesota-pf; ./deploy.sh us_oregon-pf; ./deploy.sh us-wilmington; ./deploy.sh us_arkansas-pf; ./deploy.sh us_mississippi-pf; ./deploy.sh us_oklahoma-pf; ./deploy.sh us_north_carolina-pf; ./deploy.sh us_michigan-pf; ./deploy.sh us_alabama-pf; ./deploy.sh us_missouri-pf; ./deploy.sh us_wyoming-pf; ./deploy.sh us_virginia-pf; ./deploy.sh us_north_dakota-pf; ./deploy.sh us_south_dakota-pf; ./deploy.sh us_wisconsin-pf; ./deploy.sh us_vermont-pf; ./deploy.sh us_alaska-pf; ./deploy.sh us_iowa-pf; ./deploy.sh us_new_mexico-pf; ./deploy.sh us_south_carolina-pf; ./deploy.sh us_maine-pf; ./deploy.sh us-baltimore; ./deploy.sh us_massachusetts-pf; ./deploy.sh us_louisiana-pf; ./deploy.sh us_west_virginia-pf; ./deploy.sh us_ohio-pf; ./deploy.sh us_rhode_island-pf; ./deploy.sh us_nebraska-pf ```
 # Chạy full region EU : 

@@ -28,6 +28,11 @@ services:
       - /dev/net/tun:/dev/net/tun
     cpus: ${TUN2SOCKS_CPU_LIMIT}
     mem_limit: ${TUN2SOCKS_RAM_LIMIT}
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   traffmonetizer:
     image: traffmonetizer/cli_v2

@@ -37,7 +37,7 @@ echo "Location: $LOC_NAME | Found $TOTAL_SERVERS unique servers. Starting deploy
 # 3. Loop through each specific server
 for (( i=0; i<$TOTAL_SERVERS; i++ )); do
     SERVER_ADDR=${SERVERS[$i]}
-    INSTANCE_NUM=$((i + 1))
+    INSTANCE_NUM=$((i * 2 + 1))
     
     VPN_NAME="vpn_${LOC_NAME}_${INSTANCE_NUM}"
     TRAFF_NAME="traff_${LOC_NAME}_${INSTANCE_NUM}"

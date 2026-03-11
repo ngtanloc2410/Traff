@@ -1,12 +1,12 @@
 #!/bin/bash
 
 # Usage: ./deploy_auto.sh <filename.ovpn>
-# Example: ./deploy_auto.sh NCVPN-US-Seattle-TCP.ovpn
-
 OVPN_FILE=$1
 VPN_DIR=$(pwd) 
 MANAGEMENT_FILE="ips.txt"
-MAX_ATTEMPTS=12
+MAX_ATTEMPTS=12        # Retries for a single container to get an IP
+MAX_GLOBAL_FAILS=10    # Script will exit if 10 different instances fail
+GLOBAL_FAIL_COUNT=0    # Counter for global failures
 
 # 1. Validate Input
 if [ -z "$OVPN_FILE" ]; then
@@ -25,32 +25,38 @@ LOC_NAME=$(echo "$OVPN_FILE" | sed 's/NCVPN-//; s/-TCP.ovpn//; s/-Virtual//; s/ 
 
 # Read all remote server lines into an array
 SERVERS=($(grep '^remote ' "$OVPN_FILE" | awk '{print $2}'))
-TOTAL_SERVERS=$((${#SERVERS[@]} * 2) + 30)
+NUM_SERVERS=${#SERVERS[@]} # Actual number of servers in the file
 
-if [ "$TOTAL_SERVERS" -eq 0 ]; then
+if [ "$NUM_SERVERS" -eq 0 ]; then
     echo "Error: No 'remote' server lines found in $OVPN_FILE."
     exit 1
 fi
 
-echo "Location: $LOC_NAME | Found $TOTAL_SERVERS unique servers. Starting deployment..."
+# Determine how many total containers you want to deploy
+# This uses your logic: (Server Count * 2) + 30
+TOTAL_SERVERS_TO_DEPLOY=$(( (NUM_SERVERS * 2) + 30 ))
+
+echo "Location: $LOC_NAME | Found $NUM_SERVERS unique servers."
+echo "Target: Deploying $TOTAL_SERVERS_TO_DEPLOY instances (looping through server list)."
 
 # 3. Loop through each specific server
-for (( i=0; i<$TOTAL_SERVERS; i++ )); do
-    SERVER_ADDR=${SERVERS[$i]}
+for (( i=0; i<$TOTAL_SERVERS_TO_DEPLOY; i++ )); do
+    # MODULO LOGIC: This ensures if i >= NUM_SERVERS, it starts back at index 0
+    SERVER_INDEX=$(( i % NUM_SERVERS ))
+    SERVER_ADDR=${SERVERS[$SERVER_INDEX]}
     INSTANCE_NUM=$((i + 1))
     
     VPN_NAME="vpn_${LOC_NAME}_${INSTANCE_NUM}"
     TRAFF_NAME="traff_${LOC_NAME}_${INSTANCE_NUM}"
     
-    echo "--- Deploying Instance $INSTANCE_NUM/$TOTAL_SERVERS: $SERVER_ADDR ---"
+    echo "--- Instance $INSTANCE_NUM/$TOTAL_SERVERS_TO_DEPLOY: Using Server $SERVER_ADDR ---"
 
-    # 4. Run VPN container with a specific remote server override
-    # We use --remote $SERVER_ADDR 443 to force the specific server for this container
+    # 4. Run VPN container
     docker run -d \
         --name "$VPN_NAME" \
         --cap-add=NET_ADMIN \
         --device /dev/net/tun \
-	--restart always \
+        --restart always \
         -v "$VPN_DIR":/vpn \
         --health-cmd="ping -c 1 www.ifconfig.me || exit 1" \
         --health-interval=75s \
@@ -62,14 +68,14 @@ for (( i=0; i<$TOTAL_SERVERS; i++ )); do
         alpine sh -c "apk add --no-cache openvpn curl && \
                       openvpn --config /vpn/$OVPN_FILE --auth-user-pass /vpn/vpn.txt --remote $SERVER_ADDR 443"
 
-	# 5. UNIQUE IP CHECK with RESTART LOGIC
+    # 5. UNIQUE IP CHECK
     UNIQUE=false
     CURRENT_IP=""
     ATTEMPT=0 
     
     while [ "$UNIQUE" = false ] && [ "$ATTEMPT" -lt "$MAX_ATTEMPTS" ]; do
         ((ATTEMPT++))
-        echo "Attempt $ATTEMPT/$MAX_ATTEMPTS: Waiting for IP from $SERVER_ADDR..."
+        echo "Attempt $ATTEMPT/$MAX_ATTEMPTS: Waiting for IP..."
         sleep 10
 
         CURRENT_IP=$(docker exec "$VPN_NAME" curl -s --max-time 10 https://ifconfig.me)
@@ -80,18 +86,17 @@ for (( i=0; i<$TOTAL_SERVERS; i++ )); do
             continue
         fi
 
-        # Check if IP is already in our management file
         if grep -q "$CURRENT_IP" "$MANAGEMENT_FILE" 2>/dev/null; then
-            echo "Duplicate IP ($CURRENT_IP) detected for $SERVER_ADDR. Restarting to try for a new one..."
+            echo "Duplicate IP ($CURRENT_IP) detected. Restarting for new IP..."
             sleep 2
             docker restart "$VPN_NAME"
         else
-            echo "Success! Unique IP obtained: $CURRENT_IP"
+            echo "Success! Unique IP: $CURRENT_IP"
             UNIQUE=true
         fi
     done
 
-    # 6. Run Traffmonetizer if VPN is up
+    # 6. Run Traffmonetizer or Handle Failure
     if [ "$UNIQUE" = true ]; then
         docker run -d \
             --name "$TRAFF_NAME" \
@@ -106,14 +111,22 @@ for (( i=0; i<$TOTAL_SERVERS; i++ )); do
             traffmonetizer/cli_v2 \
             start accept --token "tbOBkhRHWXCl8NHzr+/GF5qHDrWRo43PFU1XzPe+GGM=" --device-name "${LOC_NAME}_${INSTANCE_NUM}"
 
-        # Log to file
         TIMESTAMP=$(date "+%Y-%m-%d %H:%M:%S")
         echo "$TIMESTAMP | Server: $SERVER_ADDR | IP: $CURRENT_IP | VPN: $VPN_NAME" >> "$MANAGEMENT_FILE"
-	else
-        echo "FAILED: Could not get a unique IP for $SERVER_ADDR after $MAX_ATTEMPTS tries. Cleaning up..."
+    else
+        echo "FAILED: Could not get a unique IP for instance $INSTANCE_NUM."
         docker rm -f "$VPN_NAME" > /dev/null 2>&1
+        
+        # GLOBAL FAILURE LOGIC
+        ((GLOBAL_FAIL_COUNT++))
+        echo "Global failures: $GLOBAL_FAIL_COUNT/$MAX_GLOBAL_FAILS"
+        
+        if [ "$GLOBAL_FAIL_COUNT" -ge "$MAX_GLOBAL_FAILS" ]; then
+            echo "CRITICAL ERROR: Reached $MAX_GLOBAL_FAILS total failures. Exiting script."
+            exit 1
+        fi
     fi
     echo "--------------------------------------------------------"
 done
 
-echo "Deployment finished. Total containers: $TOTAL_SERVERS."
+echo "Deployment finished. Total successfully processed: $TOTAL_SERVERS_TO_DEPLOY."

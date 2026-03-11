@@ -109,6 +109,9 @@ for (( i=0; i<$TOTAL_SERVERS; i++ )); do
         # Log to file
         TIMESTAMP=$(date "+%Y-%m-%d %H:%M:%S")
         echo "$TIMESTAMP | Server: $SERVER_ADDR | IP: $CURRENT_IP | VPN: $VPN_NAME" >> "$MANAGEMENT_FILE"
+	else
+        echo "FAILED: Could not get a unique IP for $SERVER_ADDR after $MAX_ATTEMPTS tries. Cleaning up..."
+        docker rm -f "$VPN_NAME" > /dev/null 2>&1
     fi
     echo "--------------------------------------------------------"
 done

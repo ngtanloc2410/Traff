@@ -39,6 +39,10 @@ docker run -d --name autoheal --restart=always --env AUTOHEAL_CONTAINER_LABEL=al
 ```bash 
 docker ps -a --filter "name=spain" -q | wc -l
 ```
+# Lấy địa chỉ ip hiện tại :
+```bash
+docker exec -it 4adc4a914e82 sh -c 'curl ipinfo.io'
+```
 # Tăng limit linux để chạy được nhiều process ( nhiều container ) :
 ```bash
 sudo sysctl -w fs.inotify.max_user_watches=4194304 && sudo sysctl -w fs.inotify.max_user_instances=8192 && sudo sysctl -w fs.inotify.max_queued_events=65536 && sysctl fs.inotify && sudo sysctl -w net.ipv4.neigh.default.gc_thresh1=1024 && sudo sysctl -w net.ipv4.neigh.default.gc_thresh2=4096 && sudo sysctl -w net.ipv4.neigh.default.gc_thresh3=8192

@@ -6,7 +6,7 @@
 OVPN_FILE=$1
 VPN_DIR=$(pwd) 
 MANAGEMENT_FILE="ips.txt"
-MAX_ATTEMPTS=5
+MAX_ATTEMPTS=8
 
 # 1. Validate Input
 if [ -z "$OVPN_FILE" ]; then
@@ -70,7 +70,7 @@ for (( i=0; i<$TOTAL_SERVERS; i++ )); do
     while [ "$UNIQUE" = false ] && [ "$ATTEMPT" -lt "$MAX_ATTEMPTS" ]; do
         ((ATTEMPT++))
         echo "Attempt $ATTEMPT/$MAX_ATTEMPTS: Waiting for IP from $SERVER_ADDR..."
-        sleep 12 
+        sleep 10
 
         CURRENT_IP=$(docker exec "$VPN_NAME" curl -s --max-time 10 https://ifconfig.me)
         

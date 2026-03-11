@@ -47,9 +47,9 @@ for (( i=1; i<=$IP_COUNT; i++ )); do
     # Replaced WireGuard with OpenVPN command, mapping current path and region
     docker run -d \
         --name "$VPN_NAME" \
-        --privileged \
-        --sysctl net.ipv6.conf.all.disable_ipv6=0 \
-        --dns 8.8.8.8 --dns 8.8.4.4 \
+        --cap-add=NET_ADMIN \
+        --device /dev/net/tun \
+        --restart always \
         --log-driver json-file \
         --log-opt max-size=10m \
         --log-opt max-file=3 \
@@ -58,7 +58,7 @@ for (( i=1; i<=$IP_COUNT; i++ )); do
         --health-timeout=20s \
         --health-retries=3 \
         -v "$CURRENT_DIR":/vpn \
-        alpine sh -c "apk add --no-cache openvpn curl && openvpn --config /vpn/${REGION}.ovpn --auth-user-pass /vpn/vpn.txt --pull-filter ignore 'route-ipv6'"
+        alpine sh -c "apk add --no-cache openvpn curl && openvpn --config /vpn/${REGION}.ovpn --auth-user-pass /vpn/vpn.txt"
 
     # 4. Check for a Unique IP
     UNIQUE=false
@@ -78,10 +78,10 @@ for (( i=1; i<=$IP_COUNT; i++ )); do
         echo "Attempt $ATTEMPT/$MAX_ATTEMPTS: Waiting for VPN handshake..."
         
         # Alpine needs a bit of time to install apk packages and then connect
-        sleep 15
+        sleep 10
 
         # Retrieve IP
-        CURRENT_IP=$(docker exec "$VPN_NAME" curl -s --max-time 10 https://ifconfig.me)
+        CURRENT_IP=$(docker exec "$VPN_NAME" curl -s --max-time 20 https://ifconfig.me)
         
         if [ -z "$CURRENT_IP" ]; then
             echo "Handshake failed or no route. Cooling down (5s) before restart..."

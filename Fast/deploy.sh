@@ -25,7 +25,7 @@ LOC_NAME=$(echo "$OVPN_FILE" | sed 's/NCVPN-//; s/-TCP.ovpn//; s/-Virtual//; s/ 
 
 # Read all remote server lines into an array
 SERVERS=($(grep '^remote ' "$OVPN_FILE" | awk '{print $2}'))
-TOTAL_SERVERS=${#SERVERS[@]}
+TOTAL_SERVERS=$((${#SERVERS[@]} * 2))
 
 if [ "$TOTAL_SERVERS" -eq 0 ]; then
     echo "Error: No 'remote' server lines found in $OVPN_FILE."
@@ -37,7 +37,7 @@ echo "Location: $LOC_NAME | Found $TOTAL_SERVERS unique servers. Starting deploy
 # 3. Loop through each specific server
 for (( i=0; i<$TOTAL_SERVERS; i++ )); do
     SERVER_ADDR=${SERVERS[$i]}
-    INSTANCE_NUM=$((i * 2 + 1))
+    INSTANCE_NUM=$((i + 1))
     
     VPN_NAME="vpn_${LOC_NAME}_${INSTANCE_NUM}"
     TRAFF_NAME="traff_${LOC_NAME}_${INSTANCE_NUM}"

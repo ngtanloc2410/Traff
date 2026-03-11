@@ -49,6 +49,7 @@ for (( i=1; i<=$IP_COUNT; i++ )); do
         --name "$VPN_NAME" \
         --cap-add=NET_ADMIN \
         --device /dev/net/tun \
+        --dns 8.8.8.8 --dns 8.8.4.4 \
         --restart always \
         --log-driver json-file \
         --log-opt max-size=10m \

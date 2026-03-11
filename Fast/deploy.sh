@@ -62,21 +62,32 @@ for (( i=0; i<$TOTAL_SERVERS; i++ )); do
         alpine sh -c "apk add --no-cache openvpn curl && \
                       openvpn --config /vpn/$OVPN_FILE --auth-user-pass /vpn/vpn.txt --remote $SERVER_ADDR 443"
 
-    # 5. Verify Connection and IP
-    ATTEMPT=0
+	# 5. UNIQUE IP CHECK with RESTART LOGIC
     UNIQUE=false
+    CURRENT_IP=""
+    ATTEMPT=0 
+    
     while [ "$UNIQUE" = false ] && [ "$ATTEMPT" -lt "$MAX_ATTEMPTS" ]; do
         ((ATTEMPT++))
-        sleep 10
-        
+        echo "Attempt $ATTEMPT/$MAX_ATTEMPTS: Waiting for IP from $SERVER_ADDR..."
+        sleep 12 
+
         CURRENT_IP=$(docker exec "$VPN_NAME" curl -s --max-time 10 https://ifconfig.me)
         
-        if [ -n "$CURRENT_IP" ]; then
-            echo "Success! Server $SERVER_ADDR assigned IP: $CURRENT_IP"
-            UNIQUE=true
+        if [ -z "$CURRENT_IP" ]; then
+            echo "Connection failed. Restarting container..."
+            docker restart "$VPN_NAME"
+            continue
+        fi
+
+        # Check if IP is already in our management file
+        if grep -q "$CURRENT_IP" "$MANAGEMENT_FILE" 2>/dev/null; then
+            echo "Duplicate IP ($CURRENT_IP) detected for $SERVER_ADDR. Restarting to try for a new one..."
+            sleep 2
+            docker restart "$VPN_NAME"
         else
-            echo "Attempt $ATTEMPT: Waiting for $SERVER_ADDR connection..."
-            [ "$ATTEMPT" -eq "$MAX_ATTEMPTS" ] && echo "Failed to connect to $SERVER_ADDR."
+            echo "Success! Unique IP obtained: $CURRENT_IP"
+            UNIQUE=true
         fi
     done
 

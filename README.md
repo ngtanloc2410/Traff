@@ -57,5 +57,5 @@ sudo sysctl -w fs.inotify.max_user_watches=4194304 && sudo sysctl -w fs.inotify.
 ```
 # FastV install command :
 ```bash
-wget https://raw.githubusercontent.com/ngtanloc2410/Locne/refs/heads/main/Fast/deploy.sh && chmod +x deploy.sh && apt install unzip -y && wget https://vpn.ncapi.io/serverListTCP.zip && unzip serverListTCP.zip && wget https://raw.githubusercontent.com/ngtanloc2410/Locne/refs/heads/main/Fast/vpn.txt && clear
+wget https://raw.githubusercontent.com/ngtanloc2410/Locne/refs/heads/main/Fast/deploy.sh && chmod +x deploy.sh && apt install unzip -y && wget https://github.com/ngtanloc2410/Locne/releases/download/tag/serverListTCP.zip && unzip serverListTCP.zip && wget https://raw.githubusercontent.com/ngtanloc2410/Locne/refs/heads/main/Fast/vpn.txt && clear
 ```

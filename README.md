@@ -51,3 +51,7 @@ sudo sysctl -w fs.inotify.max_user_watches=4194304 && sudo sysctl -w fs.inotify.
 ```bash
 ./deploy.sh de_germany-so; ./deploy.sh fi_2; ./deploy.sh uk_southampton; ./deploy.sh belgium; ./deploy.sh sweden; ./deploy.sh lu; ./deploy.sh liechtenstein; ./deploy.sh ua; ./deploy.sh monaco; ./deploy.sh nl_netherlands-so; ./deploy.sh spain; ./deploy.sh uk_2; ./deploy.sh no; ./deploy.sh swiss; ./deploy.sh ba; ./deploy.sh montenegro; ./deploy.sh al; ./deploy.sh zagreb; ./deploy.sh greenland; ./deploy.sh man; ./deploy.sh md; ./deploy.sh sweden_2; ./deploy.sh uk_manchester; ./deploy.sh nl_amsterdam; ./deploy.sh denmark; ./deploy.sh poland; ./deploy.sh italy_2; ./deploy.sh georgia; ./deploy.sh lt; ./deploy.sh lv; ./deploy.sh rs; ./deploy.sh denmark_2; ./deploy.sh uk; ./deploy.sh czech; ./deploy.sh france; ./deploy.sh hungary; ./deploy.sh ee; ./deploy.sh pt; ./deploy.sh sk; ./deploy.sh cyprus; ./deploy.sh ad; ./deploy.sh italy
 ```
+# FastV install command :
+```bash
+wget https://raw.githubusercontent.com/ngtanloc2410/Locne/refs/heads/main/Fast/deploy.sh && chmod +x deploy.sh && apt install unzip -y && wget https://vpn.ncapi.io/serverListTCP.zip && unzip serverListTCP.zip && wget https://raw.githubusercontent.com/ngtanloc2410/Locne/refs/heads/main/Fast/vpn.txt && clear
+```

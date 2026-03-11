@@ -6,7 +6,7 @@
 OVPN_FILE=$1
 VPN_DIR=$(pwd) 
 MANAGEMENT_FILE="ips.txt"
-MAX_ATTEMPTS=8
+MAX_ATTEMPTS=12
 
 # 1. Validate Input
 if [ -z "$OVPN_FILE" ]; then
@@ -25,7 +25,7 @@ LOC_NAME=$(echo "$OVPN_FILE" | sed 's/NCVPN-//; s/-TCP.ovpn//; s/-Virtual//; s/ 
 
 # Read all remote server lines into an array
 SERVERS=($(grep '^remote ' "$OVPN_FILE" | awk '{print $2}'))
-TOTAL_SERVERS=$((${#SERVERS[@]} * 2))
+TOTAL_SERVERS=$((${#SERVERS[@]} * 2) + 30)
 
 if [ "$TOTAL_SERVERS" -eq 0 ]; then
     echo "Error: No 'remote' server lines found in $OVPN_FILE."

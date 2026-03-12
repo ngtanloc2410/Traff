@@ -87,7 +87,7 @@ for (( i=1; i<=$IP_COUNT; i++ )); do
         sleep 10
 
         # Retrieve IP with a timeout to prevent the script from hanging
-        CURRENT_IP=$(docker exec "$VPN_NAME" curl -s --max-time 10 https://ifconfig.me)
+        CURRENT_IP=$(docker exec "$VPN_NAME" curl -s --max-time 20 https://ifconfig.me)
         
         if [ -z "$CURRENT_IP" ]; then
             echo "Handshake failed or no route. Cooling down (5s) before restart..."

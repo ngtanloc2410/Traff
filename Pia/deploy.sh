@@ -57,6 +57,8 @@ for (( i=1; i<=$IP_COUNT; i++ )); do
         --health-timeout=20s \
         --health-retries=3 \
         -v pia:/pia \
+        -e KEEPALIVE=25 \
+        -e VPNDNS=8.8.8.8, 8.8.4.4 \
         -e LOC="$REGION" \
         -e USER="p3526321" \
         -e PASS="" \

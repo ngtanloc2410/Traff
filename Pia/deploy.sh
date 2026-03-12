@@ -5,7 +5,7 @@
 
 REGION=$1
 JSON_FILE="pialist.json"
-MANAGEMENT_FILE="managed_ips.txt"
+MANAGEMENT_FILE="ips.txt"
 MAX_ATTEMPTS=25
 
 # 1. Validate Input

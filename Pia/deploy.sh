@@ -43,6 +43,7 @@ for (( i=1; i<=$IP_COUNT; i++ )); do
     # Start the VPN container
     docker run -d \
         --name "$VPN_NAME" \
+        --restart unless-stopped \
         --cap-add=NET_ADMIN \
         --device=/dev/net/tun:/dev/net/tun \
         --sysctl net.ipv4.conf.all.src_valid_mark=1 \
@@ -52,9 +53,9 @@ for (( i=1; i<=$IP_COUNT; i++ )); do
         --log-driver json-file \
         --log-opt max-size=10m \
         --log-opt max-file=3 \
-        --health-cmd="ping -c 1 www.ifconfig.me || exit 1" \
-        --health-interval=90s \
-        --health-timeout=20s \
+        --health-cmd="ping -c 1 8.8.8.8 || exit 1" \
+        --health-interval=60s \
+        --health-timeout=10s \
         --health-retries=3 \
         -v pia:/pia \
         -e KEEPALIVE=25 \

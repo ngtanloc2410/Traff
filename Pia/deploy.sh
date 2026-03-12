@@ -53,16 +53,18 @@ for (( i=1; i<=$IP_COUNT; i++ )); do
         --log-driver json-file \
         --log-opt max-size=10m \
         --log-opt max-file=3 \
-        --health-cmd="ping -c 1 8.8.8.8 || exit 1" \
-        --health-interval=60s \
-        --health-timeout=10s \
-        --health-retries=3 \
         -v pia:/pia \
         -e KEEPALIVE=25 \
-        -e VPNDNS=8.8.8.8, 8.8.4.4 \
+        -e VPNDNS="8.8.8.8, 8.8.4.4" \
         -e LOC="$REGION" \
         -e USER="p3526321" \
         -e PASS="" \
+        -e ACTIVE_HEALTHCHECKS=1 \
+        -e HEALTHCHECK_PING_TARGET="8.8.8.8" \
+        -e HEALTHCHECK_PING_TIMEOUT=20 \
+        -e MONITOR_INTERVAL=60 \
+        -e MONITOR_RETRIES=3 \
+        -e RECONNECT=1 \
         thrnz/docker-wireguard-pia
 
     # 4. Check for a Unique IP (Optimized Logic)

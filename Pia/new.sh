@@ -43,7 +43,8 @@ fi
 # Decode the JSON data
 _decode() { echo ${SERVER_DATA} | base64 --decode | jq -r "$1"; }
 SERVER_REGION=$(_decode '.region')
-IP_COUNT=$(((_decode '.count') * 2))
+RAW_COUNT=$(_decode '.count')
+IP_COUNT=$(($RAW_COUNT * 2))
 
 # Sanitize region name for container naming (replace spaces with underscores)
 REGION_CLEAN=$(echo "$SERVER_REGION" | tr ' ' '_')

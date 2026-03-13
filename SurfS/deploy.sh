@@ -5,23 +5,15 @@
 
 COUNT=$1
 SERVER_ID=$2
-MANAGEMENT_FILE="managed_ips.txt"
+MANAGEMENT_FILE="ips.txt"
 MAX_ATTEMPTS=20
-
-# Credentials from test.yml
-VPN_USER="ZSvcsm2zhYe9kthVEmtkzPTK"
-VPN_PASS="NuWYDscHPf4aFAZ5vdhY67Yv"
 
 # 1. Validation
 if [[ -z "$COUNT" || -z "$SERVER_ID" ]]; then
     echo "Usage: ./deploy.sh <number> <country-city>"
     exit 1
 fi
-
-# Split server_id (e.g., us-chi) into variables
-COUNTRY=$(echo "$SERVER_ID" | cut -d'-' -f1)
-CITY=$(echo "$SERVER_ID" | cut -d'-' -f2)
-
+SERVER_ID=${SERVER_ID// /}
 touch "$MANAGEMENT_FILE"
 USED_IPS=()
 
@@ -39,26 +31,22 @@ for (( i=1; i<=$COUNT; i++ )); do
         --cap-add=NET_ADMIN \
         --device=/dev/net/tun:/dev/net/tun \
         --restart unless-stopped \
-        -e SURFSHARK_USER="$VPN_USER" \
-        -e SURFSHARK_PASSWORD="$VPN_PASS" \
-        -e SURFSHARK_COUNTRY="$COUNTRY" \
-        -e SURFSHARK_CITY="$CITY" \
-        -e CONNECTION_TYPE=tcp \
-        --dns=1.1.1.1 \
+        -e VPN_SERVICE_PROVIDER="surfshark" \
+        -e VPN_TYPE="wireguard" \
+        -e WIREGUARD_PRIVATE_KEY="wGc4XIHxz1LpHpiUQpCQ+/JB7jIRtpX1XgVqVIwqo2w=" \
+        -e WIREGUARD_ADDRESSES="10.14.0.2/16" \
+        -e SERVER_COUNTRIES="United States" \
+        -e SERVER_CITIES="$SERVER_ID" \
         --log-driver json-file \
         --log-opt max-size=10m \
         --log-opt max-file=3 \
-        --health-cmd="ping -c 1 www.ifconfig.me || exit 1" \
-        --health-interval=90s \
-        --health-timeout=20s \
-        --health-retries=3 \
-        ilteoood/docker-surfshark
-
+        qmcgaw/gluetun
+        
     # 3. Unique IP Check Loop
     UNIQUE=false
     CURRENT_IP=""
     ATTEMPT=0
-
+    
     while [ "$UNIQUE" = false ]; do
         ((ATTEMPT++))
 
@@ -68,14 +56,22 @@ for (( i=1; i<=$COUNT; i++ )); do
             exit 1
         fi
 
-        echo "Attempt $ATTEMPT/$MAX_ATTEMPTS: Checking connection..."
-        sleep 10 # Allow time for tunnel establishment
+        echo "Attempt $ATTEMPT/$MAX_ATTEMPTS: Checking connection (Initial 12s wait)..."
+        sleep 12 
 
-        # Get current IP via the VPN container
-        CURRENT_IP=$(docker exec "$VPN_NAME" curl -s --max-time 10 https://ifconfig.me)
+        # Try to get IP
+        CURRENT_IP=$(docker logs "$VPN_NAME" 2>&1 | grep "Public IP address is" | tail -n 1 | grep -oE '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+')
+
+        # --- NEW GRACE PERIOD ---
+        if [ -z "$CURRENT_IP" ]; then
+            echo "IP not found yet. Giving it 12 more seconds before restarting..."
+            sleep 12
+            CURRENT_IP=$(docker logs "$VPN_NAME" 2>&1 | grep "Public IP address is" | tail -n 1 | grep -oE '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+')
+        fi
+        # ------------------------
 
         if [ -z "$CURRENT_IP" ]; then
-            echo "No IP retrieved. Restarting VPN..."
+            echo "No IP retrieved after two checks. Restarting VPN..."
             docker restart "$VPN_NAME"
             continue
         fi

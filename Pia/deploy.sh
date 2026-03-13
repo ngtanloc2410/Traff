@@ -58,9 +58,8 @@ for (( i=1; i<=$IP_COUNT; i++ )); do
         -e VPNDNS="8.8.8.8, 8.8.4.4" \
         -e LOC="$REGION" \
         -e USER="p3526321" \
-        -e PASS="" \
+        -e PASS="Loc123456789" \
         -e ACTIVE_HEALTHCHECKS=1 \
-        -e HEALTHCHECK_PING_TARGET="8.8.8.8" \
         -e HEALTHCHECK_PING_TIMEOUT=20 \
         -e MONITOR_INTERVAL=60 \
         -e MONITOR_RETRIES=3 \

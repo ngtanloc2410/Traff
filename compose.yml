@@ -26,8 +26,9 @@ services:
       - no-new-privileges:true  
     volumes:
       - /dev/net/tun:/dev/net/tun
-    cpus: ${TUN2SOCKS_CPU_LIMIT}
-    mem_limit: ${TUN2SOCKS_RAM_LIMIT}
+    cpus: ${APP_CPU_LIMIT:-0.03}
+    mem_limit: ${APP_RAM_LIMIT:-32m}
+    mem_reservation: ${APP_RAM_RESERVE:-16m}
     logging:
       driver: "json-file"
       options:

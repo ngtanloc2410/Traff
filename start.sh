@@ -11,9 +11,6 @@ fi
 ID_LOG="id.log"
 
 # Resources
-export TUN2SOCKS_CPU_LIMIT="0.05"
-export TUN2SOCKS_RAM_LIMIT="128m"
-
 export APP_CPU_LIMIT="0.03"
 export APP_RAM_LIMIT="32m"
 export APP_RAM_RESERVE="16m"

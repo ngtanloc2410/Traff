@@ -120,10 +120,10 @@ for (( i=1; i<=$IP_COUNT; i++ )); do
         --network "container:$VPN_NAME" \
         --restart always \
         --cpus "0.03" \
-        --memory "32m" \
+        --memory "16m" \
         --memory-reservation "16m" \
         --log-driver json-file \
-        --log-opt max-size=10m \
+        --log-opt max-size=5m \
         --log-opt max-file=3 \
         traffmonetizer/cli_v2 \
         start accept --token "tbOBkhRHWXCl8NHzr+/GF5qHDrWRo43PFU1XzPe+GGM=" --device-name "a$CURRENT_IP"

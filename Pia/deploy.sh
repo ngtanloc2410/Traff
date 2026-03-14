@@ -55,7 +55,7 @@ for (( i=1; i<=$IP_COUNT; i++ )); do
         --sysctl net.ipv6.conf.all.disable_ipv6=1 \
         --sysctl net.ipv6.conf.lo.disable_ipv6=1 \
         --log-driver json-file \
-        --log-opt max-size=10m \
+        --log-opt max-size=5m \
         --log-opt max-file=3 \
         -v pia:/pia \
         -e KEEPALIVE=25 \

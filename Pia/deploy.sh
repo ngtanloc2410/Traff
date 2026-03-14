@@ -65,6 +65,9 @@ for (( i=1; i<=$IP_COUNT; i++ )); do
         -e PASS="Loc123456789" \
         -e ACTIVE_HEALTHCHECKS=1 \
         -e HEALTHCHECK_PING_TIMEOUT=10 \
+        -e RECONNECT=1 \
+        -e MONITOR_INTERVAL=60 \
+        -e MONITOR_RETRIES=3 \
         thrnz/docker-wireguard-pia
 
     # 4. Check for a Unique IP (Optimized Logic)

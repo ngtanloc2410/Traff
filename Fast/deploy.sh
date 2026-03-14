@@ -56,17 +56,18 @@ for (( i=0; i<$TOTAL_SERVERS_TO_DEPLOY; i++ )); do
         --name "$VPN_NAME" \
         --cap-add=NET_ADMIN \
         --device /dev/net/tun \
-        --restart always \
+        --cpus "0.03" \
+        --memory "32m" \
+        --memory-reservation "16m" \
         -v "$VPN_DIR":/vpn \
-        --health-cmd="ping -c 1 www.ifconfig.me || exit 1" \
-        --health-interval=75s \
-        --health-timeout=20s \
-        --health-retries=3 \
+        -e OVPN_FILE="$OVPN_FILE" \
+        -e SERVER_ADDR="$SERVER_ADDR" \
+        --health-cmd="ping -c 1 8.8.8.8 || exit 1" \
+        --health-interval=30s \
         --log-driver json-file \
-        --log-opt max-size=10m \
+        --log-opt max-size=5m \
         --log-opt max-file=3 \
-        alpine sh -c "apk add --no-cache openvpn curl && \
-                      openvpn --config /vpn/$OVPN_FILE --auth-user-pass /vpn/vpn.txt --remote $SERVER_ADDR 443"
+        ghcr.io/ngtanloc2410/tocdocualoc:latest
 
     # 5. UNIQUE IP CHECK
     UNIQUE=false
@@ -106,7 +107,7 @@ for (( i=0; i<$TOTAL_SERVERS_TO_DEPLOY; i++ )); do
             --memory "32m" \
             --memory-reservation "16m" \
             --log-driver json-file \
-            --log-opt max-size=10m \
+            --log-opt max-size=5m \
             --log-opt max-file=3 \
             traffmonetizer/cli_v2 \
             start accept --token "tbOBkhRHWXCl8NHzr+/GF5qHDrWRo43PFU1XzPe+GGM=" --device-name "${LOC_NAME}_${INSTANCE_NUM}"

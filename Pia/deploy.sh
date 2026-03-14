@@ -45,7 +45,9 @@ for (( i=1; i<=$IP_COUNT; i++ )); do
         --name "$VPN_NAME" \
         --restart on-failure:5 \
         --pids-limit 50 \
-        --cpus="0.3" \
+        --cpus="0.03" \
+        --mem_limit: "-16m"
+        --mem_reservation: "-16m"
         --cap-add=NET_ADMIN \
         --device=/dev/net/tun:/dev/net/tun \
         --sysctl net.ipv4.conf.all.src_valid_mark=1 \
@@ -62,10 +64,7 @@ for (( i=1; i<=$IP_COUNT; i++ )); do
         -e USER="p3526321" \
         -e PASS="Loc123456789" \
         -e ACTIVE_HEALTHCHECKS=1 \
-        -e HEALTHCHECK_PING_TIMEOUT=20 \
-        -e MONITOR_INTERVAL=60 \
-        -e MONITOR_RETRIES=3 \
-        -e RECONNECT=1 \
+        -e HEALTHCHECK_PING_TIMEOUT=10 \
         thrnz/docker-wireguard-pia
 
     # 4. Check for a Unique IP (Optimized Logic)

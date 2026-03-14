@@ -43,7 +43,9 @@ for (( i=1; i<=$IP_COUNT; i++ )); do
     # Start the VPN container
     docker run -d \
         --name "$VPN_NAME" \
-        --restart unless-stopped \
+        --restart on-failure:5 \
+        --pids-limit 50 \
+        --cpus="0.3" \
         --cap-add=NET_ADMIN \
         --device=/dev/net/tun:/dev/net/tun \
         --sysctl net.ipv4.conf.all.src_valid_mark=1 \

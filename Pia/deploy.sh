@@ -46,8 +46,8 @@ for (( i=1; i<=$IP_COUNT; i++ )); do
         --restart on-failure:5 \
         --pids-limit 50 \
         --cpus="0.03" \
-        --mem_limit: "-16m"
-        --mem_reservation: "-16m"
+        --memory "16m" \
+        --memory-reservation "16m" \
         --cap-add=NET_ADMIN \
         --device=/dev/net/tun:/dev/net/tun \
         --sysctl net.ipv4.conf.all.src_valid_mark=1 \

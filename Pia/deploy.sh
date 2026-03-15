@@ -57,8 +57,8 @@ for (( i=1; i<=$IP_COUNT; i++ )); do
         --sysctl net.ipv6.conf.all.disable_ipv6=1 \
         --sysctl net.ipv6.conf.lo.disable_ipv6=1 \
         --log-driver json-file \
-        --log-opt max-size=10m \
-        --log-opt max-file=3 \
+        --log-opt max-size="10m" \
+        --log-opt max-file="3" \
         -v pia:/pia \
         -e KEEPALIVE=25 \
         -e VPNDNS="8.8.8.8, 8.8.4.4" \
@@ -70,7 +70,7 @@ for (( i=1; i<=$IP_COUNT; i++ )); do
         --health-cmd="ping -c 1 8.8.8.8 || exit 1" \
         --health-interval="60s" \
         --health-timeout="15s" \
-        --health-retries=3 \
+        --health-retries="3" \
         thrnz/docker-wireguard-pia
 
     # 4. Check for a Unique IP (Optimized Logic)

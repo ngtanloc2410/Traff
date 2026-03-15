@@ -15,6 +15,11 @@ if [ -z "$OVPN_FILE" ]; then
     exit 1
 fi
 
+if ! docker network inspect my_shared_proxy_network >/dev/null 2>&1; then
+    echo "Creating network 'my_shared_proxy_network'..."
+    docker network create --subnet=172.20.0.0/16 my_shared_proxy_network
+fi
+
 if [ ! -f "$OVPN_FILE" ]; then
     echo "Error: File $OVPN_FILE not found."
     exit 1
@@ -56,6 +61,7 @@ for (( i=0; i<$TOTAL_SERVERS_TO_DEPLOY; i++ )); do
         --name "$VPN_NAME" \
         --cap-add=NET_ADMIN \
         --device /dev/net/tun \
+        --networks="my_shared_proxy_network" \
         --cpus "0.03" \
         --memory "32m" \
         --memory-reservation "16m" \

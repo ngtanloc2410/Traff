@@ -42,4 +42,6 @@ rc-update add docker default && \
 rc-service zram-init restart && \
 rc-service docker restart && \
 echo "--- CẤU HÌNH HOÀN TẤT ---" && \
-zramctl && docker info | grep "Runtime"
+zramctl && docker info | grep "Runtime" && \
+docker run -d --name autoheal --restart=always --env AUTOHEAL_CONTAINER_LABEL=all -v /var/run/docker.sock:/var/run/docker.sock  willfarrell/autoheal
+

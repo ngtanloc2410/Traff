@@ -14,6 +14,12 @@ if [ -z "$REGION" ]; then
     exit 1
 fi
 
+# Check if the external network exists; if not, create it
+if ! docker network inspect my_shared_proxy_network >/dev/null 2>&1; then
+    echo "Creating network 'my_shared_proxy_network'..."
+    docker network create --subnet=172.20.0.0/16 my_shared_proxy_network
+fi
+
 if [ ! -f "$JSON_FILE" ]; then
     echo "Error: $JSON_FILE not found."
     exit 1
@@ -45,6 +51,7 @@ for (( i=1; i<=$IP_COUNT; i++ )); do
         --name "$VPN_NAME" \
         --cap-add=NET_ADMIN \
         --device=/dev/net/tun:/dev/net/tun \
+        --network="my_shared_proxy_network" \
         --sysctl net.ipv4.conf.all.src_valid_mark=1 \
         --sysctl net.ipv6.conf.default.disable_ipv6=1 \
         --sysctl net.ipv6.conf.all.disable_ipv6=1 \
@@ -58,11 +65,11 @@ for (( i=1; i<=$IP_COUNT; i++ )); do
         -e LOC="$REGION" \
         -e USER="p3526321" \
         -e PASS="Loc123456789" \
-        -e FIREWALL=0
-        -e WG_USERSPACE=0
+        -e FIREWALL=0 \
+        -e WG_USERSPACE=0 \
         --health-cmd="ping -c 1 8.8.8.8 || exit 1" \
-        --health-interval="30s" \
-        --health-timeout="10s" \
+        --health-interval="60s" \
+        --health-timeout="15s" \
         --health-retries=3 \
         thrnz/docker-wireguard-pia
 

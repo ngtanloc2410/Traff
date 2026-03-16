@@ -31,9 +31,13 @@ sysctl -w fs.inotify.max_user_watches=4194304 && \
 sysctl -w fs.inotify.max_user_instances=8192 && \
 sysctl -w fs.inotify.max_queued_events=65536 && \
 sysctl fs.inotify && \
-sysctl -w net.ipv4.neigh.default.gc_thresh1=1024 && \
-sysctl -w net.ipv4.neigh.default.gc_thresh2=4096 && \
-sysctl -w net.ipv4.neigh.default.gc_thresh3=8192 && \
+sysctl -w net.ipv4.neigh.default.gc_thresh1=16384 && \
+sysctl -w net.ipv4.neigh.default.gc_thresh2=32768 && \
+sysctl -w net.ipv4.neigh.default.gc_thresh3=65536 && \
+sysctl -w net.core.netdev_max_backlog=10000 && \
+sysctl -w net.core.somaxconn=10000 && \
+sysctl -w net.ipv4.ip_local_port_range="1024 65535" && \
+sysctl -p && \
 rc-service docker start && \
 rc-update add docker boot && \
 docker --version && \

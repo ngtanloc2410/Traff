@@ -57,7 +57,7 @@ sudo sysctl -w fs.inotify.max_user_watches=4194304 && sudo sysctl -w fs.inotify.
 ```
 # Pia install command :
 ```bash
-wget https://raw.githubusercontent.com/ngtanloc2410/Locne/refs/heads/main/pia/deploy.sh && chmod +x deploy.sh && wget https://raw.githubusercontent.com/ngtanloc2410/Locne/refs/heads/main/pia/pialist.json && clear
+wget https://raw.githubusercontent.com/ngtanloc2410/Locne/refs/heads/main/Pia/deploy.sh && chmod +x deploy.sh && wget https://raw.githubusercontent.com/ngtanloc2410/Locne/refs/heads/main/Pia/pialist.json && clear
 ```
 # FastV install command :
 ```bash

@@ -48,30 +48,29 @@ for (( i=1; i<=$IP_COUNT; i++ )); do
 
     # Start the VPN container
     docker run -d \
-        --name "$VPN_NAME" \
-        --cap-add=NET_ADMIN \
-        --device=/dev/net/tun:/dev/net/tun \
-        --network="my_shared_proxy_network" \
-        --sysctl net.ipv4.conf.all.src_valid_mark=1 \
-        --sysctl net.ipv6.conf.default.disable_ipv6=1 \
-        --sysctl net.ipv6.conf.all.disable_ipv6=1 \
-        --sysctl net.ipv6.conf.lo.disable_ipv6=1 \
-        --log-driver json-file \
-        --log-opt max-size="10m" \
-        --log-opt max-file="3" \
-        -v pia:/pia \
-        -e KEEPALIVE=25 \
-        -e VPNDNS="8.8.8.8, 8.8.4.4" \
-        -e LOC="$REGION" \
-        -e USER="p3526321" \
-        -e PASS="Loc123456789" \
-        -e FIREWALL=0 \
-        -e WG_USERSPACE=0 \
-        --health-cmd="ping -c 1 8.8.8.8 || exit 1" \
-        --health-interval="60s" \
-        --health-timeout="15s" \
-        --health-retries="3" \
-        thrnz/docker-wireguard-pia
+      --name "$VPN_NAME" \
+      --cap-add=NET_ADMIN \
+      --device /dev/net/tun \
+      --sysctl net.ipv4.conf.all.src_valid_mark=1 \
+      --sysctl net.ipv6.conf.all.disable_ipv6=1 \
+      --network my_shared_proxy_network \
+      --restart unless-stopped \
+      -v ./data/pia:/pia \
+      -e LOC="$REGION" \
+      -e USER="p3526321" \
+      -e PASS="Loc123456789" \
+      -e KEEPALIVE=25 \
+      -e VPNDNS="1.1.1.1,1.0.0.1" \
+      -e RECONNECT=1 \
+      -e MONITOR_INTERVAL=60 \
+      -e MONITOR_RETRIES=5 \
+      -e HEALTHCHECK_PING_TARGET="1.1.1.1 8.8.8.8" \
+      -e FIREWALL=0 \
+      -e WG_USERSPACE=0 \
+      --log-driver json-file \
+      --log-opt max-size=10m \
+      --log-opt max-file=3 \
+      thrnz/docker-wireguard-pia
 
     # 4. Check for a Unique IP (Optimized Logic)
     UNIQUE=false

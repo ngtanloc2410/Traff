@@ -1,5 +1,5 @@
 apk update && \
-apk add zram-init crun docker unzip nano screen jq && \
+apk add zram-init crun docker unzip nano screen jq bash && \
 mkdir -p /etc/docker && \
 cat <<EOF > /etc/conf.d/zram-init
 num_devices=1

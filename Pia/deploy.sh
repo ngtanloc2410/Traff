@@ -58,7 +58,7 @@ for (( i=1; i<=$IP_COUNT; i++ )); do
       -v ./data/pia:/pia \
       -e LOC="$REGION" \
       -e USER="p3526321" \
-      -e PASS="Loc123456789" \
+      -e PASS="" \
       -e KEEPALIVE=25 \
       -e VPNDNS="1.1.1.1,1.0.0.1" \
       -e RECONNECT=1 \

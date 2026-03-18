@@ -25,7 +25,7 @@ sudo docker compose -p "proxy-stack-SỐ BẠN MUỐN" down
 ```
 # Dừng chay toàn bộ ( Kể cả không phải docker liên quan tới traff ) : 
 ```bash
-sudo docker stop $(sudo docker ps -a -q) &&  sudo docker rm $(sudo docker ps -a -q)
+rm ips.txt && docker stop $(docker ps -a -q) &&  docker rm $( docker ps -a -q)
 ```
 
 ```bash

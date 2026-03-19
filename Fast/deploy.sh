@@ -65,13 +65,15 @@ for (( i=0; i<$TOTAL_SERVERS_TO_DEPLOY; i++ )); do
         --cpus "0.03" \
         --memory "32m" \
         --memory-reservation "16m" \
+        --dns "8.8.8.8" \
+        --dns "4.4.4.4" \
         -v "$VPN_DIR":/vpn \
         -e OVPN_FILE="$OVPN_FILE" \
         -e SERVER_ADDR="$SERVER_ADDR" \
-        --health-cmd="ping -c 1 8.8.8.8 || exit 1" \
-        --health-interval="60s" \
-        --health-timeout="15s" \
-        --health-retries=3 \
+        #--health-cmd="ping -c 1 8.8.8.8 || exit 1" \
+        #--health-interval="60s" \
+        #--health-timeout="15s" \
+        #--health-retries=3 \
         --log-driver json-file \
         --log-opt max-size="5m" \
         --log-opt max-file="3" \

@@ -4,8 +4,8 @@
 OVPN_FILE=$1
 VPN_DIR=$(pwd) 
 MANAGEMENT_FILE="ips.txt"
-MAX_ATTEMPTS=7     # Retries for a single container to get an IP
-MAX_GLOBAL_FAILS=7    # Script will exit if 10 different instances fail
+MAX_ATTEMPTS=5     # Retries for a single container to get an IP
+MAX_GLOBAL_FAILS=5   # Script will exit if 10 different instances fail
 GLOBAL_FAIL_COUNT=0    # Counter for global failures
 
 docker pull ghcr.io/ngtanloc2410/tocdocualoc:latest

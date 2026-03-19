@@ -70,10 +70,6 @@ for (( i=0; i<$TOTAL_SERVERS_TO_DEPLOY; i++ )); do
         -v "$VPN_DIR":/vpn \
         -e OVPN_FILE="$OVPN_FILE" \
         -e SERVER_ADDR="$SERVER_ADDR" \
-        #--health-cmd="ping -c 1 8.8.8.8 || exit 1" \
-        #--health-interval="60s" \
-        #--health-timeout="15s" \
-        #--health-retries=3 \
         --log-driver json-file \
         --log-opt max-size="5m" \
         --log-opt max-file="3" \
@@ -87,7 +83,7 @@ for (( i=0; i<$TOTAL_SERVERS_TO_DEPLOY; i++ )); do
     while [ "$UNIQUE" = false ] && [ "$ATTEMPT" -lt "$MAX_ATTEMPTS" ]; do
         ((ATTEMPT++))
         echo "Attempt $ATTEMPT/$MAX_ATTEMPTS: Waiting for IP..."
-        sleep 10
+        sleep 15
 
         CURRENT_IP=$(docker exec "$VPN_NAME" curl -s --max-time 10 https://ifconfig.me)
         
@@ -119,8 +115,8 @@ for (( i=0; i<$TOTAL_SERVERS_TO_DEPLOY; i++ )); do
             --log-driver json-file \
             --log-opt max-size=5m \
             --log-opt max-file=3 \
-            traffmonetizer/cli_v2 \
-            start accept --token "tbOBkhRHWXCl8NHzr+/GF5qHDrWRo43PFU1XzPe+GGM=" --device-name "$CURRENT_IP"
+            ghcr.io/ngtanloc2410/traffmonetizer:latest \
+            start accept --token "tbOBkhRHWXCl8NHzr+/GF5qHDrWRo43PFU1XzPe+GGM=" --device-name "bocuam"
 
         TIMESTAMP=$(date "+%Y-%m-%d %H:%M:%S")
         echo "$TIMESTAMP | Server: $SERVER_ADDR | IP: $CURRENT_IP | VPN: $VPN_NAME" >> "$MANAGEMENT_FILE"

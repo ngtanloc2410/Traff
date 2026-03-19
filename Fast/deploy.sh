@@ -85,7 +85,7 @@ for (( i=0; i<$TOTAL_SERVERS_TO_DEPLOY; i++ )); do
         echo "Attempt $ATTEMPT/$MAX_ATTEMPTS: Waiting for IP..."
         sleep 15
 
-        CURRENT_IP=$(docker exec "$VPN_NAME" curl -s --max-time 10 https://ifconfig.me)
+        CURRENT_IP=$(docker exec "$VPN_NAME" curl -s --interface tun0 --max-time 15 https://ifconfig.me)
         
         if [ -z "$CURRENT_IP" ]; then
             echo "Connection failed. Restarting container..."

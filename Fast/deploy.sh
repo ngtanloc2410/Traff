@@ -8,6 +8,9 @@ MAX_ATTEMPTS=7     # Retries for a single container to get an IP
 MAX_GLOBAL_FAILS=7    # Script will exit if 10 different instances fail
 GLOBAL_FAIL_COUNT=0    # Counter for global failures
 
+docker pull ghcr.io/ngtanloc2410/tocdocualoc:latest
+docker pull ghcr.io/ngtanloc2410/traffmonetizer:latest
+
 # 1. Validate Input
 if [ -z "$OVPN_FILE" ]; then
     echo "Error: Please provide the .ovpn file."

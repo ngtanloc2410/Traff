@@ -119,7 +119,7 @@ for (( i=0; i<$TOTAL_SERVERS_TO_DEPLOY; i++ )); do
             start accept --token "tbOBkhRHWXCl8NHzr+/GF5qHDrWRo43PFU1XzPe+GGM=" --device-name "bocuam"
 
         TIMESTAMP=$(date "+%Y-%m-%d %H:%M:%S")
-        echo "$TIMESTAMP | Server: $SERVER_ADDR | IP: $CURRENT_IP | VPN: $VPN_NAME" >> "$MANAGEMENT_FILE"
+        echo "$TIMESTAMP | Server: $SERVER_ADDR | IP: $CURRENT_IP | VPN: $VPN_NAME | TRAFF: $TRAFF_NAME" >> "$MANAGEMENT_FILE"
     else
         echo "FAILED: Could not get a unique IP for instance $INSTANCE_NUM."
         docker rm -f "$VPN_NAME" > /dev/null 2>&1

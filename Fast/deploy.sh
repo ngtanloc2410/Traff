@@ -113,6 +113,10 @@ for (( i=0; i<$TOTAL_SERVERS_TO_DEPLOY; i++ )); do
             --cpus "0.03" \
             --memory "32m" \
             --memory-reservation "16m" \
+            --health-cmd="curl -f ipinfo.io || exit 1" \
+            --health-interval=70s \
+            --health-timeout=20s \
+            --health-retries=3
             --log-driver json-file \
             --log-opt max-size=5m \
             --log-opt max-file=3 \

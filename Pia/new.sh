@@ -64,6 +64,7 @@ for (( i=1; i<=$IP_COUNT; i++ )); do
         --memory-reservation "16m" \
         --dns "8.8.8.8" \
         --dns "4.4.4.4" \
+        --tmpfs /tmp:rw,noexec,nosuid,size=16m \
         -v "$VPN_DIR":/vpn \
         -e OVPN_FILE="$OVPN_FILE" \
         --log-driver json-file \

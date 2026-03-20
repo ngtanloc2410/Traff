@@ -25,6 +25,8 @@ if [ ! -f "$JSON_FILE" ]; then
     exit 1
 fi
 
+OVPN_FILE="${REGION}.ovpn"
+
 # 2. Extract count and calculate
 RAW_COUNT=$(jq -r --arg REG "$REGION" '
   to_entries 

@@ -4,6 +4,7 @@
 # Example: ./deploy_region.sh us_florida
 
 REGION=$1
+VPN_DIR=$(pwd)
 JSON_FILE="pialist.json"
 MANAGEMENT_FILE="ips.txt"
 MAX_ATTEMPTS=25

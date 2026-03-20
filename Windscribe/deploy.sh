@@ -104,7 +104,6 @@ for (( i=1; i<=$IP_COUNT; i++ )); do
         docker run -d \
             --name "$TRAFF_NAME" \
             --network "container:$VPN_NAME" \
-            --restart always \
             --cpus "0.03" \
             --memory "32m" \
             --memory-reservation "16m" \

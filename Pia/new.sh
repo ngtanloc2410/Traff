@@ -26,7 +26,11 @@ if [ ! -f "$JSON_FILE" ]; then
 fi
 
 # 2. Extract count and calculate
-RAW_COUNT=$(jq -r --arg REG "$REGION" '.[$REG].count // 0' "$JSON_FILE")
+RAW_COUNT=$(jq -r --arg REG "$REGION" '
+  to_entries 
+  | [.[] | select(.key | startswith($REG))] 
+  | .[0].value.count // 0
+' "$JSON_FILE")
 
 if [ "$RAW_COUNT" -eq 0 ] || [ "$RAW_COUNT" == "null" ]; then
     echo "No IPs found for region: $REGION"

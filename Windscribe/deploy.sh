@@ -22,7 +22,7 @@ fi
 
 OVPN_FILE=$REGION
 
-IP_COUNT=100
+IP_COUNT=130
 
 echo "Region: $REGION | Original: $RAW_COUNT | Deploying: $IP_COUNT"
 

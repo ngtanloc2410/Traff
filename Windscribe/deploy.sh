@@ -6,7 +6,7 @@
 REGION=$1
 VPN_DIR=$(pwd)
 MANAGEMENT_FILE="ips.txt"
-MAX_ATTEMPTS=15
+MAX_ATTEMPTS=20
 
 # 1. Validate Input
 if [ -z "$REGION" ]; then

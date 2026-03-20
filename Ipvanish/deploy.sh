@@ -8,7 +8,7 @@ MAX_ATTEMPTS=5
 MAX_GLOBAL_FAILS=5
 GLOBAL_FAIL_COUNT=0
 
-docker pull ghcr.io/ngtanloc2410/tocdocualoc:latest
+docker pull ghcr.io/ngtanloc2410/ipvanish:latest
 docker pull ghcr.io/ngtanloc2410/traffmonetizer:latest
 
 # 1. Validate Input

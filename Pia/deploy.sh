@@ -120,18 +120,22 @@ for (( i=1; i<=$IP_COUNT; i++ )); do
     done
 
     # 5. Run Traffmonetizer container
-    docker run -d \
-        --name "$TRAFF_NAME" \
-        --network "container:$VPN_NAME" \
-        --restart always \
-        --cpus "0.03" \
-        --memory "16m" \
-        --memory-reservation "16m" \
-        --log-driver json-file \
-        --log-opt max-size=5m \
-        --log-opt max-file=3 \
-        traffmonetizer/cli_v2 \
-        start accept --token "tbOBkhRHWXCl8NHzr+/GF5qHDrWRo43PFU1XzPe+GGM=" --device-name "a$CURRENT_IP"
+        docker run -d \
+            --name "$TRAFF_NAME" \
+            --network "container:$VPN_NAME" \
+            --restart always \
+            --cpus "0.03" \
+            --memory "32m" \
+            --memory-reservation "16m" \
+            --health-cmd="curl -f ipinfo.io || exit 1" \
+            --health-interval=70s \
+            --health-timeout=20s \
+            --health-retries=3 \
+            --log-driver json-file \
+            --log-opt max-size=5m \
+            --log-opt max-file=3 \
+            ghcr.io/ngtanloc2410/traffmonetizer:latest \
+            start accept --token "tbOBkhRHWXCl8NHzr+/GF5qHDrWRo43PFU1XzPe+GGM=" --device-name "a$CURRENT_IP"
 
     # 6. Write to the management file
     TIMESTAMP=$(date "+%Y-%m-%d %H:%M:%S")
